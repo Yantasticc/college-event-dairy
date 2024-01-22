@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import Event from "../models/Event.js";
+import User from "../models/User.js";
 
 
 ///// GET ALL EVENTS
@@ -20,6 +22,19 @@ export const getAllEvents = async (req,res,next) => {
 ///// POST CREATE EVENT
 export const addEvent = async (req,res,next) => {
     const {title, description, image, user} = req.body;
+
+    let existingUser;
+    try {
+        existingUser = await User.findById(user);
+    } catch (err) {
+        return console.log(err)
+    }
+    if(!existingUser){
+        return res.status(400).json({
+            message: "Unable to find the user by give Id"
+        })
+    }
+
     const event = new Event({
         title,
         description,
@@ -27,9 +42,17 @@ export const addEvent = async (req,res,next) => {
         user,
     });
     try {
-        await event.save()
+        const session = await mongoose.startSession();
+        session.startTransaction();
+        await event.save({session});
+        existingUser.events.push(event)
+        await existingUser.save({session})
+        await session.commitTransaction();
     } catch (err) {
-        return console.log(err)
+        console.log(err)
+        return res.status(500).json({
+            message: err
+        })
     }
     return res.status(200).json({event})
 }

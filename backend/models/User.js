@@ -16,7 +16,15 @@ const userSchema = new Schema({
             type: String,
             requried: true,
             minLength: 6,
-        }
+        },
+        // Events array as per the user
+        events: [
+            {
+                type: mongoose.Types.ObjectId, 
+                ref: "Event",
+                requried: true
+            }
+        ],
     },
     { timestamps: true }
 );
