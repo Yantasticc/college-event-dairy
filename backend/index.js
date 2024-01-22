@@ -33,10 +33,6 @@ const connect = async ()=> {
 //     console.log("Connected mongoDB Atlas");
 // })
 
-
-// middelware
-
-
 app.listen(8000, ()=> {
     connect() 
     console.log("Connected to Backend")

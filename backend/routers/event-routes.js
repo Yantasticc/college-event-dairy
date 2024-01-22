@@ -21,5 +21,4 @@ eventRouter.delete("/:id", deleteEvent)
 ///// GET USER EVENT
 eventRouter.get("/user/:id", getByUserId)
 
-
 export default eventRouter;
