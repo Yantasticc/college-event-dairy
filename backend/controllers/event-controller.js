@@ -117,3 +117,22 @@ export const deleteEvent = async (req,res,next) => {
         message: "Event deleted successfully"
     })
 } 
+
+///// GET USER EVENT
+export const getByUserId = async (req,res,next) => {
+    const userId = req.params.id;
+    let userEvents;
+    try {
+        userEvents = await User.findById(userId).populate("events");
+    } catch (err) {
+        return console.log(err)
+    }
+    if(!userEvents){
+        return res.status(404).json({
+            message: "No event found"
+        })
+    }
+    return res.status(200).json({
+        events:userEvents
+    })   
+}
